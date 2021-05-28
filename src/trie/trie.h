@@ -1,4 +1,4 @@
-
+typedef struct Trie Trie;
 Trie* criaTrie();
 void liberaTrie(Trie* tr);
 int insereTrie(Trie* tr, char *str);
