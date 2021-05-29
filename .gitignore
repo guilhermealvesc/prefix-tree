@@ -1,4 +1,5 @@
-.out
+*.out
 .vscode
-.exe
+*.exe
 .cpb
+main
