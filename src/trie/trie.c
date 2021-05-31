@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <stdbool.h>
 #include <string.h>
 #include "trie.h"
 #define MAX_CHARS 26
@@ -10,7 +9,7 @@
 #define getChar(i) (char) (i + 97)
 struct Trie {
   struct Trie *child[MAX_CHARS];
-  bool end;
+  unsigned short int end;
 };
 
 Trie startNode() {
@@ -18,7 +17,7 @@ Trie startNode() {
   if (node) {
     for (size_t i = 0; i < MAX_CHARS; i++)
       node->child[i] = NULL;
-    node->end = false;
+    node->end = 0;
   }
   return node;
 }
@@ -55,7 +54,7 @@ int insereTrie(Trie *tr, char *str) {
   Trie node = *tr;
   char letter = *str;
   if (letter == '\0') {
-    node->end = true;
+    node->end = 1;
     return 1;
   }
   //if alpha, insert
