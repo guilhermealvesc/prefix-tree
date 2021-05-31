@@ -97,7 +97,7 @@ int removeTrie(Trie *tr, char *str) {
 
 void imprimeSubTrie(Trie tr, char *word, int tam) {
 
-  if(!tr) return;
+  if(!tr || !word || tam < 0) return;
 
   if(tr->end) {
     word[tam] = '\0';
@@ -119,6 +119,7 @@ void imprimeTrie(Trie *tr) {
 }
 
 Trie arvorePrefixo(Trie tr, char *prefixo) {
+  if(!tr || !prefixo) return NULL;
   char letter = *prefixo;
   if (letter == '\0') 
     return tr;
