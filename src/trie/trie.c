@@ -22,6 +22,8 @@ int isLeaf(Trie tr);
 void imprimeSubTrie(Trie tr, char *word, int tam);
 //Função auxiliar para recuperar nó raiz da árvore com o prefixo passado
 Trie arvorePrefixo(Trie tr, char *prefixo);
+//Função auxiliar para remoção
+Trie subremoveTrie(Trie tr,char *str, int *deletado);
 
 Trie* criaTrie() {
   Trie* root = (Trie*) malloc(sizeof(Trie));
@@ -92,8 +94,7 @@ int buscaTrie(Trie *tr, char *str) {
   //Se primeira letra for o caractere terminador e o nó for terminado, string está na árvore
   if (letter == '\0' && node->end) 
     return 1;
-  
-
+    
   if(isalpha(letter)) { 
     int pos = hashChar(letter);
     //Se não tiver filho com a respectiva letra, string não está na trie
@@ -107,7 +108,11 @@ int buscaTrie(Trie *tr, char *str) {
 }
 
 int removeTrie(Trie *tr, char *str) {
-  //Só deus sabe
+   if (!tr || !str)
+    return 0;
+  int deletado = 0;
+  *tr = subremoveTrie(*tr, str, &deletado);
+  return deletado;
 }
 
 void imprimeTrie(Trie *tr) {
@@ -181,4 +186,44 @@ Trie arvorePrefixo(Trie tr, char *prefixo) {
   } else
     //Ignora caracteres não alfa na string
     return arvorePrefixo(tr, prefixo + 1);
+}
+
+
+Trie subremoveTrie(Trie tr,char *str, int *deletado){
+  int teste = 0;
+
+  if(*str == '\0'){ //verifica se chegou no fim da palavra
+    if(tr->end){ //verifica se a palavra esta na Trie
+      
+      tr->end = 0; 
+      *deletado = 1;
+      //Se tiver filho libera o nó
+      for(size_t i = 0; i < MAX_CHARS; i++){
+        if(tr->child[i])  {
+          teste = 1;
+          break;
+        } 
+      }
+      if(teste){
+        free(tr);
+        tr = NULL;
+      }
+
+     }
+    return tr;
+  }
+  for(size_t i = 0; i < MAX_CHARS; i++){
+        if(tr->child[i]) {
+          teste = 1;
+          break;
+        }
+  } 
+  char letter = *str;
+  int pos = hashChar(letter);
+  tr->child[pos] = subremoveTrie(tr->child[pos], str+1, deletado);
+  if( (*deletado == 1) && (teste == 0) && (tr->end == 0) ){
+      free(tr);
+      tr = NULL;
+  }
+  return tr;
 }
