@@ -110,6 +110,9 @@ int buscaTrie(Trie *tr, char *str) {
 int removeTrie(Trie *tr, char *str) {
    if (!tr || !str)
     return 0;
+  
+  if(!buscaTrie(tr, str)) return 0;
+
   int deletado = 0;
   *tr = subremoveTrie(*tr, str, &deletado);
   return deletado;
@@ -190,38 +193,42 @@ Trie arvorePrefixo(Trie tr, char *prefixo) {
 
 
 Trie subremoveTrie(Trie tr,char *str, int *deletado){
-  int teste = 0;
+  int tem_filho = 0;//0 = não tem filho, 1 = tem filho
 
   if(*str == '\0'){ //verifica se chegou no fim da palavra
     if(tr->end){ //verifica se a palavra esta na Trie
       
-      tr->end = 0; 
+      tr->end = 0; //deleta da árvore porém continua na memória
       *deletado = 1;
       //Se tiver filho libera o nó
       for(size_t i = 0; i < MAX_CHARS; i++){
         if(tr->child[i])  {
-          teste = 1;
+          tem_filho = 1;
           break;
         } 
       }
-      if(teste){
-        free(tr);
+      if(tem_filho){
+        free(tr); //liberando nó
         tr = NULL;
       }
+    }
+    return tr; //caso base da recursão
+    //retornando e substituindo ponteiro para o nó na árvore
+   }
 
-     }
-    return tr;
-  }
+  char letter = *str;
+  int pos = hashChar(letter); //forma recursiva de ''andar'' na arvore
+  tr->child[pos] = subremoveTrie(tr->child[pos], str+1, deletado);
+  
+  //verifica se o nó tem filho
   for(size_t i = 0; i < MAX_CHARS; i++){
         if(tr->child[i]) {
-          teste = 1;
+          tem_filho = 1;
           break;
         }
   } 
-  char letter = *str;
-  int pos = hashChar(letter);
-  tr->child[pos] = subremoveTrie(tr->child[pos], str+1, deletado);
-  if( (*deletado == 1) && (teste == 0) && (tr->end == 0) ){
+  //libera memória dos nós intermediarios entre as chamadas recursivas
+  if( (*deletado == 1) && (tem_filho == 0) && (tr->end == 0) ){
       free(tr);
       tr = NULL;
   }
