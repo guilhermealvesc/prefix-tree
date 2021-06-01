@@ -200,7 +200,10 @@ Trie subremoveTrie(Trie tr,char *str, int *deletado){
       
       tr->end = 0; //deleta da árvore porém continua na memória
       *deletado = 1;
-      //Se tiver filho libera o nó
+      /*
+      Esta parte no código libera da memória o conteúdo
+      evitando desperdício de memória porém as vezes apaga
+      mais que uma palavra(por exemplo zanga e zangado, apagando uma se apaga as duas)
       for(size_t i = 0; i < MAX_CHARS; i++){
         if(tr->child[i])  {
           tem_filho = 1;
@@ -210,7 +213,7 @@ Trie subremoveTrie(Trie tr,char *str, int *deletado){
       if(tem_filho){
         free(tr); //liberando nó
         tr = NULL;
-      }
+      }*/
     }
     return tr; //caso base da recursão
     //retornando e substituindo ponteiro para o nó na árvore
