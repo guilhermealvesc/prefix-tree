@@ -39,7 +39,8 @@ int main() {
   
   char op;
   while (1) {
-    printf("1-Inserir palavra\n2-Buscar palavra\n3-Finalizar execucao\n4-Imprimir Trie\n5-ORA ORA ORA ORA ORA ORA ORA\n6-Imprimir prefixo\nQual opcao?: ");
+    printf("1-Inserir palavra\n2-Buscar palavra\n3-Remover palavra\n4-Imprimir Trie\n5-ORA ORA ORA\n6-Imprimir prefixo");
+    printf("\n7-Finalizar execucao\nQual opcao?: ");
     op = getchar();
     switch (op) {
       //-------------------------------------------------------------------------------------
@@ -64,14 +65,19 @@ int main() {
       break;
       //-------------------------------------------------------------------------------------
     case '3':
-      printf("Liberando a arvore\n");
-      liberaTrie(trie);
-      printf("Fim da execucao\n");
-      return 0;
+      printf("Qual palavra deseja remover?\n");
+      scanf("%s",palavra);
+      if(removeTrie(trie, palavra))
+        printf("Sucesso na remocao\n");
+      else
+        printf("Falha na remocao\n");  
+      break;
+      //-------------------------------------------------------------------------------------
     case '4':
       printf("----------PRINTANDO O TRIE FILHO EXQUECE----------\n");
       imprimeTrie(trie);
       break;
+      //-------------------------------------------------------------------------------------
     case '5': 
         printf("⣿⣿⣿⣿⣿⣿⣿⡿⡛⠟⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\n");
         printf("⣿⣿⣿⣿⣿⣿⠿⠨⡀⠄⠄⡘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\n");
@@ -93,12 +99,17 @@ int main() {
       autocompletarTrie(trie, palavra);
       break;
       //-------------------------------------------------------------------------------------
+    case '7':
+      printf("Liberando a arvore\n");
+      liberaTrie(trie);
+      printf("Fim da execucao\n");
+      return 0;
     }
-    //system("pause"); //windows
-    setbuf(stdin, NULL); //linux
+    setbuf(stdin, NULL); 
+    system("pause"); //windows
     // int c = getchar(); //linux
     // system("clear"); //linux
-    //system("cls"); //windows
+    system("cls"); //windows
   }
   liberaTrie(trie);
   free(arq);
