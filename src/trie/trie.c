@@ -141,7 +141,7 @@ int removeTrie(Trie *tr, char *str) {
 void imprimeTrie(Trie *tr) {
   if (!tr) return;
   //Cria um vetor auxiliar para imprimir a trie;
-  char word[250];
+  char word[256];
   //Imprime a subTrie com o seu tamanho (chamada inicial: string vazia com tamanho 0) 
   imprimeSubTrie(*tr, word, 0);
 }
@@ -150,7 +150,7 @@ void autocompletarTrie(Trie *tr, char *prefixo) {
   if(!tr || !prefixo) return;
   //arvorePrefixo desce na Trie até a subTrie com o prefixo passado, retornando o nó raiz dela
   //para a imprimiSubTrie que imprime uma árvore
-  char word[250];
+  char word[256];
   strcpy(word, prefixo);
   imprimeSubTrie(arvorePrefixo(*tr, prefixo), word, strlen(word));
 }
