@@ -88,8 +88,8 @@ int main() {
         printf("Opcao invalida!\n");
         break;
     }
-    // system("pause"); //windows
-    // system("cls"); //windows
+     system("pause"); //windows
+     system("cls"); //windows
   }
   liberaTrie(trie);
   free(arq);
