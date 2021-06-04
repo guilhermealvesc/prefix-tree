@@ -22,8 +22,7 @@ int isLeaf(Trie tr);
 void imprimeSubTrie(Trie tr, char *word, int tam);
 //Função auxiliar para recuperar nó raiz da árvore com o prefixo passado
 Trie arvorePrefixo(Trie tr, char *prefixo);
-//Função auxiliar para remoção
-Trie subremoveTrie(Trie tr,char *str, int *deletado);
+
 
 Trie* criaTrie() {
   Trie* root = (Trie*) malloc(sizeof(Trie));
@@ -107,15 +106,36 @@ int buscaTrie(Trie *tr, char *str) {
     return buscaTrie(tr, str + 1);
 }
 
-int removeTrie(Trie *tr, char *str) {
-   if (!tr || !str)
-    return 0;
-  
-  if(!buscaTrie(tr, str)) return 0;
 
-  int deletado = 0;
-  *tr = subremoveTrie(*tr, str, &deletado);
-  return deletado;
+int removeTrie(Trie *tr, char *str) {
+  if (!tr || !str)
+    return 0;
+  Trie node = *tr;
+  //Pega primeira letra
+  char letter = *str;
+
+  //Se primeira letra for o caractere terminador e o nó for terminado, string está na árvore
+  if (letter == '\0' && node->end){ 
+    node->end = 0;
+    return 1;
+  }
+  if(isalpha(letter)) { 
+    int pos = hashChar(letter);
+    //Se não tiver filho com a respectiva letra, string não está na trie
+    if (!node->child[pos])
+      return 0;
+    //Desçe na árvore e avança o ponteiro para o próximo caractere da string a procurar
+    if(removeTrie(&(node->child[pos]), str + 1)){
+      if(isLeaf(node->child[pos]) && !(node->child[pos]->end)){
+        free(node->child[pos]);
+        node->child[pos] = NULL;
+      }
+        return 1;
+    } 
+    return 0;
+  } else 
+    //Ignora caracteres não alfa na string
+    return removeTrie(tr, str + 1);
 }
 
 void imprimeTrie(Trie *tr) {
@@ -191,49 +211,10 @@ Trie arvorePrefixo(Trie tr, char *prefixo) {
     return arvorePrefixo(tr, prefixo + 1);
 }
 
-
-Trie subremoveTrie(Trie tr,char *str, int *deletado){
-  int tem_filho = 0;//0 = não tem filho, 1 = tem filho
-
-  if(*str == '\0'){ //verifica se chegou no fim da palavra
-    if(tr->end){ //verifica se a palavra esta na Trie
-      
-      tr->end = 0; //deleta da árvore porém continua na memória
-      *deletado = 1;
-      /*
-      Esta parte no código libera da memória o conteúdo
-      evitando desperdício de memória porém as vezes apaga
-      mais que uma palavra(por exemplo zanga e zangado, apagando uma se apaga as duas)
-      for(size_t i = 0; i < MAX_CHARS; i++){
-        if(tr->child[i])  {
-          tem_filho = 1;
-          break;
-        } 
-      }
-      if(tem_filho){
-        free(tr); //liberando nó
-        tr = NULL;
-      }*/
-    }
-    return tr; //caso base da recursão
-    //retornando e substituindo ponteiro para o nó na árvore
-   }
-
-  char letter = *str;
-  int pos = hashChar(letter); //forma recursiva de ''andar'' na arvore
-  tr->child[pos] = subremoveTrie(tr->child[pos], str+1, deletado);
-  
-  //verifica se o nó tem filho
-  for(size_t i = 0; i < MAX_CHARS; i++){
-        if(tr->child[i]) {
-          tem_filho = 1;
-          break;
-        }
-  } 
-  //libera memória dos nós intermediarios entre as chamadas recursivas
-  if( (*deletado == 1) && (tem_filho == 0) && (tr->end == 0) ){
-      free(tr);
-      tr = NULL;
+int isLeaf(Trie tr){
+  for(size_t i = 0;i < MAX_CHARS;i++){
+    if(tr->child[i] != NULL)
+      return 0;
   }
-  return tr;
+  return 1;
 }
